@@ -1,0 +1,7 @@
+*.zip
+*.pyc
+dataset/*.json
+models/
+results/
+dataset/cuad
+dataset/old
