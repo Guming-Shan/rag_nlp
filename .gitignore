@@ -2,6 +2,9 @@
 *.pyc
 dataset/*.json
 models/
-results/
 dataset/cuad
 dataset/old
+
+results/*
+!results/*/
+!results/*/evaluation.json

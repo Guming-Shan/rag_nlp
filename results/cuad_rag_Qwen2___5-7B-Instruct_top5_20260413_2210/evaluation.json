@@ -1,0 +1,26 @@
+{
+  "args": {
+    "method": "rag",
+    "batch": true,
+    "batch_size": 8,
+    "model_path": "/home/ubuntu/rag_nlp/pipeline/models/Qwen/Qwen2___5-7B-Instruct",
+    "dataset_path": "/home/ubuntu/rag_nlp/pipeline/dataset/cuad_rag.json",
+    "corpus_path": "/home/ubuntu/rag_nlp/pipeline/dataset/cuad_corpus.json",
+    "debug": true,
+    "debug_size": 40,
+    "eval_only": false,
+    "input_results": null,
+    "topk": 5
+  },
+  "metrics": {
+    "EM": 0.0,
+    "hit_rate": 0.45,
+    "citation_precision": 1.0,
+    "citation_recall": 1.0,
+    "hallucination_rate": 0.774055898843084,
+    "factscore": 0.22594410115691574,
+    "soft_hit_rate": 0.425,
+    "semantic_similarity": 0.25779011270489627,
+    "bertscore": 0.7754037111997605
+  }
+}

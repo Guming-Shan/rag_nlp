@@ -1,4 +1,4 @@
-origin data format:
+CUAD origin data format:
 {
   "version": "aok_v1.0", 
   "data": [ # data有很多项
@@ -41,7 +41,25 @@ origin data format:
 }
       
 
-
+finance format:
+{
+  "financebench_id": "financebench_id_03029",
+  "company": "3M",
+  "doc_name": "3M_2018_10K",
+  "question": "...",
+  "answer": "$1577.00",
+  "justification": "...",
+  "evidence": [...],
+  "doc_link": "..."
+}
+financebench_document_information.jsonl for corpus:
+{
+  "doc_name": "3M_2015_10K",
+  "company": "3M",
+  "doc_type": "10k",
+  "doc_period": 2015,
+  "doc_link": "..."
+}
 
 
 

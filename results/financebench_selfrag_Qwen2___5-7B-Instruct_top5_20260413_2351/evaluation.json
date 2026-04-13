@@ -1,0 +1,26 @@
+{
+  "args": {
+    "method": "selfrag",
+    "batch": true,
+    "batch_size": 8,
+    "model_path": "/home/ubuntu/rag_nlp/pipeline/models/Qwen/Qwen2___5-7B-Instruct",
+    "dataset_path": "/home/ubuntu/rag_nlp/pipeline/dataset/financebench_rag.json",
+    "corpus_path": "/home/ubuntu/rag_nlp/pipeline/dataset/financebench_corpus.json",
+    "debug": true,
+    "debug_size": 40,
+    "eval_only": false,
+    "input_results": null,
+    "topk": 5
+  },
+  "metrics": {
+    "EM": 0.0,
+    "hit_rate": 0.175,
+    "citation_precision": 0.25999999999999995,
+    "citation_recall": 0.6,
+    "hallucination_rate": 0.9140277777777778,
+    "factscore": 0.08597222222222226,
+    "soft_hit_rate": 0.125,
+    "semantic_similarity": 0.1342540772565543,
+    "bertscore": 0.8017120972275734
+  }
+}

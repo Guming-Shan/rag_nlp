@@ -1,0 +1,26 @@
+{
+  "args": {
+    "method": "selfrag",
+    "batch": true,
+    "batch_size": 8,
+    "model_path": "/home/ubuntu/rag_nlp/pipeline/models/LLM-Research/Meta-Llama-3___1-8B-Instruct",
+    "dataset_path": "/home/ubuntu/rag_nlp/pipeline/dataset/cuad_rag.json",
+    "corpus_path": "/home/ubuntu/rag_nlp/pipeline/dataset/cuad_corpus.json",
+    "debug": true,
+    "debug_size": 40,
+    "eval_only": false,
+    "input_results": null,
+    "topk": 5
+  },
+  "metrics": {
+    "EM": 0.0,
+    "hit_rate": 0.475,
+    "citation_precision": 1.0,
+    "citation_recall": 1.0,
+    "hallucination_rate": 0.901517857142857,
+    "factscore": 0.09848214285714284,
+    "soft_hit_rate": 0.275,
+    "semantic_similarity": 0.1980663319621956,
+    "bertscore": 0.7739133343100548
+  }
+}

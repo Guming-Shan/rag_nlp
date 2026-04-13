@@ -4,7 +4,7 @@ import numpy as np
 import faiss
 from rank_bm25 import BM25Okapi
 from sentence_transformers import SentenceTransformer
-
+import re
 
 class HybridRetriever:
     """
@@ -25,20 +25,25 @@ class HybridRetriever:
         self.encoder = SentenceTransformer(embedding_model)
 
         # Sparse model
-        tokenized_corpus = [doc.split() for doc in self.texts]
+        tokenized_corpus = [self.tokenize(doc) for doc in self.texts]
         self.bm25 = BM25Okapi(tokenized_corpus)
 
         # FAISS index
-        self.embeddings = self.encoder.encode(self.texts, show_progress_bar=True)
+        self.embeddings = self.encoder.encode(self.texts, convert_to_numpy=True, normalize_embeddings=True)
         self.embeddings = np.array(self.embeddings).astype("float32")
 
         dim = self.embeddings.shape[1]
         self.index = faiss.IndexFlatL2(dim)
         self.index.add(self.embeddings)
 
+    def tokenize(self, text):
+        text = text.lower()
+        text = re.sub(r"[^a-z0-9 ]", " ", text)
+        return text.split()
+
     # Dense retrieval
     def dense_search(self, query, k=20):
-        q_emb = self.encoder.encode([query]).astype("float32")
+        q_emb = self.encoder.encode([query], convert_to_numpy=True, normalize_embeddings=True).astype("float32")
 
         D, I = self.index.search(q_emb, k)
 

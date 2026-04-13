@@ -9,11 +9,11 @@ This module defines the main RAG pipeline methods, including:
 """
 
 from tqdm import tqdm
-from prompt import build_prompt
+from prompt import build_prompt, build_prompt_financebench
 from retriever import HybridRetriever
 from llm import generate_answer, generate_batch
 
-def run_rag(dataset, retriever, tokenizer, model, k=5):
+def run_rag(dataset, retriever, tokenizer, model, k=5, datatype="cuad"):
     results = []
 
     for sample in tqdm(dataset):
@@ -23,7 +23,11 @@ def run_rag(dataset, retriever, tokenizer, model, k=5):
         docs = retriever.retrieve(question, k=k)
 
         # prompt
-        prompt = build_prompt(question, docs)
+        
+        if datatype == "financebench":
+            prompt = build_prompt_financebench(question, docs)
+        else:
+            prompt = build_prompt(question, docs)
 
         # generate
         answer = generate_answer(tokenizer, model, prompt)
@@ -47,7 +51,7 @@ def run_rag(dataset, retriever, tokenizer, model, k=5):
     return results
 
 
-def run_rag_batch(dataset, retriever, tokenizer, model, k=5, batch_size=8):
+def run_rag_batch(dataset, retriever, tokenizer, model, k=5, datatype="cuad", batch_size=8):
     results = []
 
     # 按长度排序
@@ -62,7 +66,12 @@ def run_rag_batch(dataset, retriever, tokenizer, model, k=5, batch_size=8):
         batch_docs = retriever.retrieve_batch(questions, k=k)
 
         # prompt
-        prompts = [build_prompt(q, d) for q, d in zip(questions, batch_docs)]
+        prompts = []
+        for q, d in zip(questions, batch_docs):
+            if datatype == "financebench":
+                prompts.append(build_prompt_financebench(q, d))
+            else:
+                prompts.append(build_prompt(q, d))
 
         # generate (batch)
         answers = generate_batch(tokenizer, model, prompts)
@@ -78,13 +87,17 @@ def run_rag_batch(dataset, retriever, tokenizer, model, k=5, batch_size=8):
 
     return results
 
-def run_llm_only(dataset, tokenizer, model):
+def run_llm_only(dataset, tokenizer, model, datatype="cuad"):
     results = []
 
     for sample in tqdm(dataset):
         question = sample["question"]
 
-        prompt = build_prompt(question, docs=None)  # 无docs
+        
+        if datatype == "financebench":
+            prompt = build_prompt_financebench(question, docs=None)
+        else:
+            prompt = build_prompt(question, docs=None)
 
         answer = generate_answer(tokenizer, model, prompt)
 
@@ -97,7 +110,7 @@ def run_llm_only(dataset, tokenizer, model):
 
     return results
 
-def run_llm_only_batch(dataset, tokenizer, model, batch_size=8):
+def run_llm_only_batch(dataset, tokenizer, model, datatype="cuad", batch_size=8):
     results = []
 
     dataset = sorted(dataset, key=lambda x: len(x["question"]))
@@ -108,10 +121,12 @@ def run_llm_only_batch(dataset, tokenizer, model, batch_size=8):
         questions = [s["question"] for s in batch]
 
         # build prompts
-        prompts = [
-            build_prompt(q, docs=None)
-            for q in questions
-        ]
+        prompts = []
+        for q in questions:
+            if datatype == "financebench":
+                prompts.append(build_prompt_financebench(q, docs=None))
+            else:
+                prompts.append(build_prompt(q, docs=None))
 
         # generate batch
         answers = generate_batch(tokenizer, model, prompts)
@@ -127,14 +142,17 @@ def run_llm_only_batch(dataset, tokenizer, model, batch_size=8):
     return results
 
 
-def run_self_rag(dataset, retriever, tokenizer, model, k=5):
+def run_self_rag(dataset, retriever, tokenizer, model, k=5, datatype="cuad"):
     results = []
 
     for sample in tqdm(dataset):
         question = sample["question"]
 
         # Step 1: LLM-only initial answer
-        prompt_no_docs = build_prompt(question, docs=None)
+        if datatype == "financebench":
+            prompt_no_docs = build_prompt_financebench(question, docs=None)
+        else:
+            prompt_no_docs = build_prompt(question, docs=None)
         draft_answer = generate_answer(tokenizer, model, prompt_no_docs)
 
         # Step 2: Self-judge (是否需要检索)
@@ -157,7 +175,10 @@ Answer only "YES" or "NO".
         if "NO" in judge.upper():
             docs = retriever.retrieve(question, k=k)
 
-            prompt = build_prompt(question, docs)
+            if datatype == "financebench":
+                prompt = build_prompt_financebench(question, docs)
+            else:
+                prompt = build_prompt(question, docs)
             final_answer = generate_answer(tokenizer, model, prompt)
         else:
             docs = []
@@ -175,7 +196,7 @@ Answer only "YES" or "NO".
 
     return results
 
-def run_self_rag_batch(dataset, retriever, tokenizer, model, k=5, batch_size=8):
+def run_self_rag_batch(dataset, retriever, tokenizer, model, k=5, datatype="cuad", batch_size=8):
     results = []
 
     dataset = sorted(dataset, key=lambda x: len(x["question"]))
@@ -185,7 +206,12 @@ def run_self_rag_batch(dataset, retriever, tokenizer, model, k=5, batch_size=8):
         questions = [s["question"] for s in batch]
 
         # Step 1: LLM-only
-        prompts_no_docs = [build_prompt(q, None) for q in questions]
+        prompts_no_docs = []
+        for q in questions:
+            if datatype == "financebench":
+                prompts_no_docs.append(build_prompt_financebench(q, docs=None))
+            else:
+                prompts_no_docs.append(build_prompt(q, docs=None))
         draft_answers = generate_batch(tokenizer, model, prompts_no_docs)
 
         # Step 2: judge
@@ -226,7 +252,10 @@ Answer only "YES" or "NO".
                 docs = retrieved_docs[docs_idx]
                 docs_idx += 1
 
-                prompt = build_prompt(q, docs)
+                if datatype == "financebench":
+                    prompt = build_prompt_financebench(q, docs)
+                else:
+                    prompt = build_prompt(q, docs)
                 ans = generate_answer(tokenizer, model, prompt)
             else:
                 docs = []
