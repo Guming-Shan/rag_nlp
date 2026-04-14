@@ -1,0 +1,26 @@
+{
+  "args": {
+    "method": "rag",
+    "batch": true,
+    "batch_size": 8,
+    "model_path": "/home/ubuntu/rag_nlp/pipeline/models/LLM-Research/Meta-Llama-3___1-8B-Instruct",
+    "dataset_path": "/home/ubuntu/rag_nlp/pipeline/dataset/financebench_rag.json",
+    "corpus_path": "/home/ubuntu/rag_nlp/pipeline/dataset/financebench_corpus.json",
+    "debug": true,
+    "debug_size": 40,
+    "eval_only": false,
+    "input_results": null,
+    "topk": 3
+  },
+  "metrics": {
+    "EM": 0.0,
+    "hit_rate": 0.075,
+    "citation_precision": 0.3,
+    "citation_recall": 0.55,
+    "hallucination_rate": 0.9291924757474325,
+    "factscore": 0.07080752425256737,
+    "soft_hit_rate": 0.125,
+    "semantic_similarity": 0.1502692646999484,
+    "bertscore": 0.7878616616129875
+  }
+}
